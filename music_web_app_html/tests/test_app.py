@@ -54,3 +54,10 @@ def test_get_single_album_3(page, test_web_address, db_connection):
     expect(heading_tag).to_have_text('Waterloo')
     p_tags = page.locator('p')
     expect(p_tags).to_have_text('Release year: 1974\nArtist: ABBA')
+
+def test_album_links(page, test_web_address, db_connection):
+    db_connection.seed('seeds/music_library.sql')
+    page.goto(f"http://{test_web_address}/albums")
+    link_to_album = page.get_by_role("link", name='Doolittle')
+    expect(link_to_album).to_have_attribute('href', '/albums/1')
+    #link_to_album.click()
