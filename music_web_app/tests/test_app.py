@@ -41,6 +41,43 @@ def test_get_album_1(web_client):
     assert response.status_code == 200
     assert response.data.decode('utf-8') == "Album(1, Doolittle, 1989, 1)"
 
+"""
+GET /artists
+  Expected response (200 OK):
+    Pixies, ABBA, Taylor Swift, Nina Simone
+"""
+def test_get_artists(db_connection, web_client):
+    db_connection.seed("seeds/music_library.sql")
+    response = web_client.get('/artists')
+    assert response.status_code == 200
+    assert response.data.decode('utf-8') == 'Pixies, ABBA, Taylor Swift, Nina Simone'
+
+"""
+POST /artists
+  Parameters:
+    name: Wild nothing
+    genre: Indie
+  Expected response (200 OK):
+  (No content)
+"""
+def test_post_artist(db_connection, web_client):
+    db_connection.seed('seeds/music_library.sql')
+    response = web_client.post('/artists', data={'name': 'Inhaler', 'genre': 'Indie'})
+    assert response.status_code == 200
+    assert response.data.decode('utf-8') == ''
+
+
+"""
+GET /artists after using POST
+    Expected response: 200(OK)
+    'Pixies, ABBA, Taylor Swift, Nina Simone, Inhaler'
+"""
+
+def test_get_artists_after_post(db_connection, web_client):
+    response = web_client.get('/artists')
+    assert response.status_code == 200
+    assert response.data.decode('utf-8') == 'Pixies, ABBA, Taylor Swift, Nina Simone, Inhaler'
+
 
 
 # === Example Code Below ===
